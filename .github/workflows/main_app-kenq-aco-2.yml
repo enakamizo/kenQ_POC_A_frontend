@@ -28,12 +28,22 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
+      
+      - name: Copy artifact for deployment job    # 変更点➀
+        run: |
+          mkdir deploy
+          cp -r ./.next/standalone/. ./deploy
+          cp -r ./public ./deploy
+          cp -r ./.next/static/. ./deploy/.next/static
+
+      - name: Zip artifact for deployment
+        run: zip release.zip ./deploy -r   # 変更点➁
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -44,6 +54,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
+
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
       
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -51,5 +64,5 @@ jobs:
         with:
           app-name: 'app-kenq-aco-2'
           slot-name: 'Production'
-          package: .
+          package: ./deploy    # 変更点➂
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C93B494C1D604DF58A1906DA560A3582 }}
