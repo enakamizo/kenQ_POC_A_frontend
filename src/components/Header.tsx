@@ -55,6 +55,14 @@ const Header = () => {
             案件登録
           </button>
         )}
+
+        {/* マイページリンク */}
+        <Link
+          href="/mypage"
+          className="text-gray-700 hover:text-gray-900 transition"
+        >
+          マイページ
+        </Link>
         
         {/* ユーザー名 */}
         <span className="text-gray-700">{username}</span>

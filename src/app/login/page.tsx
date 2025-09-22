@@ -22,7 +22,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const callbackUrl = searchParams.get("callbackUrl") ?? "/register";
+      const callbackUrl = searchParams.get("callbackUrl") ?? "/mypage";
 
       const result = await signIn("credentials", {
         company_user_name: companyUserName,
@@ -31,7 +31,7 @@ export default function LoginPage() {
         callbackUrl,
       });
 
-      // console.log("signIn result:", result);
+      console.log("signIn result:", result);
 
       if (result?.error) {
         if (result.error === "CredentialsSignin") {
