@@ -2,11 +2,12 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function MyPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [selectedUser, setSelectedUser] = useState("全案件");
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -32,7 +33,19 @@ export default function MyPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto p-6">
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">マイページ</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">リサーチ案件一覧</h1>
+
+          {/* フィルターボックス */}
+          <div className="mb-6">
+            <select
+              value={selectedUser}
+              onChange={(e) => setSelectedUser(e.target.value)}
+              className="w-64 px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="全案件">全案件</option>
+              <option value={session?.user?.name || "ユーザー"}>{session?.user?.name || "ユーザー"}</option>
+            </select>
+          </div>
 
           <div className="space-y-6">
             <div className="border-b pb-4">
