@@ -62,8 +62,8 @@ export default function MatchedResearchers({
 
         // バックエンドからのお気に入り状態を初期化
         const initialFavorites = researchers
-          .filter(r => r.favorite_status === true)
-          .map(r => (r.researcher_info?.researcher_id || r.matching_id).toString());
+          .filter((r: any) => r.favorite_status === true)
+          .map((r: any) => (r.researcher_info?.researcher_id || r.matching_id).toString());
 
         console.log("🌟 初期お気に入り一覧:", initialFavorites);
         setFavorites(initialFavorites);
