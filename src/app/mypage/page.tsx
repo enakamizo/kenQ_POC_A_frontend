@@ -25,7 +25,7 @@ export default function MyPage() {
 
     setLoading(true);
     try {
-      const response = await fetch(`https://app-kenq-aco-1-ded8hjejgfa6bzdw.japaneast-01.azurewebsites.net/project-info?company_id=${session.user.id}`, {
+      const response = await fetch(`https://app-kenq-aco-1-ded8hjejgfa6bzdw.japaneast-01.azurewebsites.net/project-info/${session.user.id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

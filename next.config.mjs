@@ -17,7 +17,7 @@ const nextConfig = {
                 `style-src 'self' 'unsafe-inline' fonts.googleapis.com; ` +
                 `font-src 'self' fonts.gstatic.com; ` +
                 `img-src 'self' data:; ` +
-                `connect-src 'self' ${process.env.API_URL || ''} ${process.env.NEXTAUTH_URL || 'http://localhost:3000'}; ` +
+                `connect-src 'self' ${process.env.API_URL || ''} https://app-kenq-aco-1-ded8hjejgfa6bzdw.japaneast-01.azurewebsites.net ${process.env.NEXTAUTH_URL || 'http://localhost:3000'}; ` +
                 `form-action 'self'; ` +
                 `object-src 'none';`
               : // 開発環境: Next.js/HMRに必要な最小限の許可
@@ -26,7 +26,7 @@ const nextConfig = {
                 `style-src 'self' 'unsafe-inline' fonts.googleapis.com; ` +
                 `font-src 'self' fonts.gstatic.com; ` +
                 `img-src 'self' data:; ` +
-                `connect-src 'self' ${process.env.API_URL || ''} ${process.env.NEXTAUTH_URL || 'http://localhost:3000'}; ` +
+                `connect-src 'self' ${process.env.API_URL || ''} https://app-kenq-aco-1-ded8hjejgfa6bzdw.japaneast-01.azurewebsites.net ${process.env.NEXTAUTH_URL || 'http://localhost:3000'}; ` +
                 `form-action 'self'; ` +
                 `object-src 'none';`,
           },
