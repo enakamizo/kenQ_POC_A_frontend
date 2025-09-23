@@ -50,26 +50,14 @@ export default function MatchedResearchers({
         const data = await response.json();
 
         console.log("🔍 APIレスポンス", data);
-        console.log("🔍 プロジェクトタイトル:", data.project?.project_title);
-        console.log("🔍 マッチング数:", data.matchings?.length);
+        console.log("🔍 プロジェクトタイトル:", data.project_title);
+        console.log("🔍 研究者数:", data.matched_researchers?.length);
 
-        setProjectTitle(data.project?.project_title || "");
+        setProjectTitle(data.project_title || "");
 
-        const uniqueResearchers = Array.from(
-          new Map(
-            data.matchings.map((item: any) => [
-              item.researcher.researcher_id,
-              {
-                ...item.researcher,
-                matching_reason: item.matching_reason,
-                matching_status: item.matching_status,
-                hasNewMessage: item.has_new_message || false,
-                chat_id: item.chat_id || null
-              },
-            ])
-          ).values()
-        );
-        setResearchers(uniqueResearchers);
+        // APIレスポンスの構造に合わせて直接matched_researchersを使用
+        const researchers = data.matched_researchers || [];
+        setResearchers(researchers);
       } catch (error) {
         console.error("研究者データの取得エラー:", error);
       } finally {
