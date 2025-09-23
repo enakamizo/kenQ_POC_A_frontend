@@ -57,6 +57,7 @@ export default function MatchedResearchers({
 
         // APIレスポンスの構造に合わせて直接matched_researchersを使用
         const researchers = data.matched_researchers || [];
+        console.log("🔍 サンプル研究者データ:", researchers[0]);
         setResearchers(researchers);
       } catch (error) {
         console.error("研究者データの取得エラー:", error);
@@ -359,22 +360,22 @@ export default function MatchedResearchers({
           </thead>
           <tbody className="divide-y divide-gray-200">
             {researchers.map((researcher: any) => (
-              <tr key={researcher.researcher_info?.researcher_id || researcher.matching_id} className="hover:bg-gray-50">
-                <td className="px-4 py-4 text-gray-900">{researcher.researcher_info?.name}</td>
+              <tr key={researcher.researcher_id || researcher.researcher_info?.researcher_id || researcher.matching_id} className="hover:bg-gray-50">
+                <td className="px-4 py-4 text-gray-900">{researcher.researcher_name || researcher.researcher_info?.name || "―"}</td>
                 <td className="px-4 py-4 text-gray-700">
-                  {researcher.researcher_info?.university}
+                  {researcher.researcher_affiliation_current || researcher.researcher_info?.university || "―"}
                 </td>
                 <td className="px-4 py-4 text-gray-700">
                   <div className="min-w-[8em] max-w-[8em] break-words whitespace-normal leading-tight">
-                    {researcher.researcher_info?.affiliation || "―"}
+                    {researcher.researcher_department_current || researcher.researcher_info?.affiliation || "―"}
                   </div>
                 </td>
                 <td className="px-4 py-4 text-gray-700">
-                  {researcher.researcher_info?.position || "―"}
+                  {researcher.researcher_position_current || researcher.researcher_info?.position || "―"}
                 </td>
                 <td className="px-1 py-4 text-center align-top pr-2">
-                  <a 
-                    href={`https://nrid.nii.ac.jp/ja/nrid/1${(researcher.researcher_info?.researcher_id || researcher.matching_id).toString().padStart(12, '0')}`}
+                  <a
+                    href={`https://nrid.nii.ac.jp/ja/nrid/1${(researcher.researcher_id || researcher.researcher_info?.researcher_id || researcher.matching_id).toString().padStart(12, '0')}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center px-1 py-0.5 bg-blue-500 text-white rounded hover:bg-blue-600 transition whitespace-nowrap"
@@ -388,10 +389,10 @@ export default function MatchedResearchers({
                 </td>
                 <td className="pl-3 pr-1 py-4 text-gray-700 text-xs align-top break-words">
                   {(() => {
-                    const researcherId = (researcher.researcher_info?.researcher_id || researcher.matching_id).toString();
-                    const fullReason = researcher.researcher_info?.explanation || 
-                                     researcher.explanation || 
-                                     researcher.matching_reason || 
+                    const researcherId = (researcher.researcher_id || researcher.researcher_info?.researcher_id || researcher.matching_id).toString();
+                    const fullReason = researcher.matching_reason ||
+                                     researcher.researcher_info?.explanation ||
+                                     researcher.explanation ||
                                      "―";
                     const isExpanded = expandedReasons.includes(researcherId);
                     
@@ -448,14 +449,14 @@ export default function MatchedResearchers({
                 </td>
                 <td className="pl-1 pr-2 py-4 text-center">
                   <button 
-                    onClick={() => handleToggleFavoriteLocal((researcher.researcher_info?.researcher_id || researcher.matching_id).toString())}
+                    onClick={() => handleToggleFavoriteLocal((researcher.researcher_id || researcher.researcher_info?.researcher_id || researcher.matching_id).toString())}
                     className={`transition text-base ${
-                      favorites.includes((researcher.researcher_info?.researcher_id || researcher.matching_id).toString())
+                      favorites.includes((researcher.researcher_id || researcher.researcher_info?.researcher_id || researcher.matching_id).toString())
                         ? "text-yellow-500 hover:text-yellow-600"
                         : "text-gray-400 hover:text-yellow-500"
                     }`}
                   >
-                    {favorites.includes((researcher.researcher_info?.researcher_id || researcher.matching_id).toString()) ? "★" : "☆"}
+                    {favorites.includes((researcher.researcher_id || researcher.researcher_info?.researcher_id || researcher.matching_id).toString()) ? "★" : "☆"}
                   </button>
                 </td>
               </tr>
