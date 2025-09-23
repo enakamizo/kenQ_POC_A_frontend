@@ -8,7 +8,7 @@ const Header = () => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { data: session } = useSession();
   
-  const userID = session?.user?.id || "ユーザー";
+  const userID = session?.user?.company_user_name || "ユーザー";
 
   const handleLogout = async () => {
     // NextAuthのログアウト処理
@@ -34,16 +34,48 @@ const Header = () => {
         {/* リサーチ案件一覧リンク */}
         <Link
           href="/mypage"
-          className="text-gray-700 hover:text-gray-900 transition"
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition"
         >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-5 h-5"
+          >
+            <path
+              d="M8 6H21M8 12H21M8 18H21M3 6H3.01M3 12H3.01M3 18H3.01"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
           リサーチ案件一覧
         </Link>
 
         {/* 新規登録リンク */}
         <Link
           href="/register"
-          className="text-gray-700 hover:text-gray-900 transition"
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition"
         >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-5 h-5"
+          >
+            <path
+              d="M12 5V19M5 12H19"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
           新規登録
         </Link>
 
