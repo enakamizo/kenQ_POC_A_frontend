@@ -25,8 +25,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const response = await fetch(`${apiUrl}/favorites`, {
-      method: 'POST',
+    const matchingId = body.matching_id;
+
+    if (!matchingId) {
+      return NextResponse.json(
+        { error: 'matching_id is required' },
+        { status: 400 }
+      );
+    }
+
+    console.log(`Calling backend API: ${apiUrl}/favorites/${matchingId}`);
+    console.log('Request body:', JSON.stringify(body, null, 2));
+
+    const response = await fetch(`${apiUrl}/favorites/${matchingId}`, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },

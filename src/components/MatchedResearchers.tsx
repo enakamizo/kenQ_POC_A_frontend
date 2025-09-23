@@ -163,15 +163,15 @@ export default function MatchedResearchers({
           (r.researcher_info?.researcher_id || r.matching_id).toString() === researcherId
         );
         
+        const matchingId = researcher?.matching_id || Number(researcherId);
         const requestBody = {
-          researcher_id: Number(researcherId),
-          project_id: Number(projectId),
-          matching_id: researcher?.matching_id || Number(researcherId),
-          favorite_status: 1, // 1 = add to favorites
+          matching_id: matchingId,
+          favorite_status: true, // true = add to favorites
         };
-        
-        // console.log("🌟 Request body:", requestBody);
-        
+
+        console.log("🌟 Request body:", requestBody);
+        console.log("🌟 Matching ID:", matchingId);
+
         const response = await fetch('/api/favorites', {
           method: "POST",
           headers: {
