@@ -96,7 +96,7 @@ export default function MyPage() {
               <div className="text-gray-600">読み込み中...</div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {projects.map((project, index) => (
                 <div key={project.project_id || index} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm flex flex-col h-full">
                   <div className="mb-4 flex-grow">
