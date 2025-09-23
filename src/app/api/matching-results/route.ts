@@ -57,6 +57,7 @@ export async function GET(req: NextRequest) {
     }
 
     const result = await response.json();
+    console.log('Backend API response:', JSON.stringify(result, null, 2));
     return NextResponse.json(result);
 
   } catch (error) {
