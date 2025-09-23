@@ -77,23 +77,6 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
     return (
         <div className="max-w-7xl mx-auto p-8 bg-white rounded-lg mt-10">
             {/* 上段：案件の詳細 */}
-            <div className="mb-8 p-6 bg-gray-50 rounded-lg">
-                <h1 className="text-2xl font-bold mb-4">案件詳細</h1>
-                {projectData ? (
-                    <div>
-                        <h2 className="text-xl font-semibold mb-2">{projectData.project_title}</h2>
-                        <p className="text-gray-600 mb-4">{projectData.project_content}</p>
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div><strong>業界カテゴリ:</strong> {projectData.industry_category}</div>
-                            <div><strong>事業内容:</strong> {projectData.business_description}</div>
-                            <div><strong>大学:</strong> {projectData.university?.join(', ')}</div>
-                            <div><strong>研究者レベル:</strong> {projectData.preferred_researcher_level?.join(', ')}</div>
-                        </div>
-                    </div>
-                ) : (
-                    <p>案件データを読み込み中...</p>
-                )}
-            </div>
             <ProjectDetails projectId={projectId} setLoading={() => {}} />
 
             {/* 下段：おすすめの研究者リスト */}
