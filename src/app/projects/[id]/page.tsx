@@ -11,16 +11,29 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
     const [showBackConfirm, setShowBackConfirm] = useState(false);
 
     useEffect(() => {
-        // localStorageから保存されたプロジェクトデータを取得
-        const storedData = localStorage.getItem(`project_${projectId}`);
-        if (storedData) {
-            const data = JSON.parse(storedData);
-            setProjectData(data);
-            // console.log("Loaded project data:", data);
-        } else {
-            console.error("Project data not found for ID:", projectId);
-        }
-        setLoading(false);
+        const fetchProjectData = async () => {
+            try {
+                // 案件詳細を取得
+                const response = await fetch(`/api/projects?company_id=1`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const project = data.projects?.find((p: any) => p.project_id.toString() === projectId);
+                    if (project) {
+                        setProjectData(project);
+                    } else {
+                        console.error("Project not found for ID:", projectId);
+                    }
+                } else {
+                    console.error("Failed to fetch project data");
+                }
+            } catch (error) {
+                console.error("Error fetching project data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProjectData();
     }, [projectId]);
 
     if (loading) {

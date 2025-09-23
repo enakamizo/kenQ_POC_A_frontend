@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 interface Project {
   project_id: string;
@@ -115,9 +116,12 @@ export default function MyPage() {
                     <div>登録者: {project.company_user_name || "未設定"}</div>
                   </div>
 
-                  <button className="w-full py-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors">
+                  <Link
+                    href={`/projects/${project.project_id}`}
+                    className="block w-full py-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors text-center"
+                  >
                     詳細
-                  </button>
+                  </Link>
                 </div>
               ))}
             </div>
