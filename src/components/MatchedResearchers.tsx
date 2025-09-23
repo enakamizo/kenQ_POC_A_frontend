@@ -239,15 +239,17 @@ export default function MatchedResearchers({
       ["案件内容", projectData?.background || ""],
       ["業種", projectData?.industry || "入力なし"],
       ["事業内容", projectData?.businessDescription || "入力なし"],
-      ["大学", 
-        Array.isArray(projectData?.university) && projectData.university.includes("全大学")
-          ? `全大学（118校）`
+      ["大学",
+        typeof projectData?.university === "string" && projectData.university
+          ? `${projectData.university}（${projectData.university.split(',').length}校）`
           : Array.isArray(projectData?.university) && projectData.university.length > 0
           ? `${projectData.university.join("/")}（${projectData.university.length}校）`
           : "全大学（118校）"
       ],
       ["研究者階層",
-        Array.isArray(projectData?.researcherLevel) && projectData.researcherLevel.length > 0
+        typeof projectData?.researcherLevel === "string" && projectData.researcherLevel
+          ? projectData.researcherLevel
+          : Array.isArray(projectData?.researcherLevel) && projectData.researcherLevel.length > 0
           ? projectData.researcherLevel.join("/")
           : "教授／准教授／助教／講師／助教授／助手／研究員／特任教授／特任助教／主任研究員"
       ]
