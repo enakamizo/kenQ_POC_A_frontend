@@ -31,6 +31,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    console.log(`Calling backend API: ${apiUrl}/ai-diagnosis`);
+    console.log('Request body:', JSON.stringify(bodyWithUserId, null, 2));
+
     const response = await fetch(`${apiUrl}/ai-diagnosis`, {
       method: 'POST',
       headers: {
@@ -39,11 +42,14 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(bodyWithUserId),
     });
 
+    console.log(`Backend API response status: ${response.status}`);
+
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Backend API error:', errorText);
+      console.error('Backend API error response:', errorText);
+      console.error('Backend API error status:', response.status);
       return NextResponse.json(
-        { error: 'AI診断処理中にエラーが発生しました' },
+        { error: 'AI診断処理中にエラーが発生しました', backendError: errorText },
         { status: 500 }
       );
     }
