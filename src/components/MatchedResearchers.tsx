@@ -33,20 +33,7 @@ export default function MatchedResearchers({
   useEffect(() => {
     const fetchResearchers = async () => {
       try {
-        // localStorageからマッチング結果を取得
-        const storedData = localStorage.getItem(`project_${projectId}`);
-        if (storedData) {
-          const data = JSON.parse(storedData);
-          // console.log("MatchedResearchers - 研究者データ:", data.matchingResults.matched_researchers);
-          // console.log("MatchedResearchers - 研究者数:", data.matchingResults.matched_researchers?.length);
-          setResearchers(data.matchingResults.matched_researchers || []);
-          setProjectTitle(data.projectData.title || "");
-          setProjectData(data.projectData || null);
-          setLoading(false);
-          return;
-        }
-        
-        // フォールバック: APIから取得
+        // APIから研究者マッチング結果を取得
         const response = await fetch(`/api/matching-results?project_id=${projectId}`, {
           method: "GET",
           headers: {
@@ -62,10 +49,9 @@ export default function MatchedResearchers({
 
         const data = await response.json();
 
-        // console.log("🔍 APIレスポンス", data);
-        // console.log("🔍 プロジェクトタイトル:", data.matchings?.[0]?.project?.project_title);
-        //console.log("🔍 サンプル研究者データ:", data.matchings?.[0]?.researcher);
-        // console.log("🔍 サンプル研究者データ:", JSON.stringify(data.matchings?.[0]?.researcher, null, 2));
+        console.log("🔍 APIレスポンス", data);
+        console.log("🔍 プロジェクトタイトル:", data.project?.project_title);
+        console.log("🔍 マッチング数:", data.matchings?.length);
 
         setProjectTitle(data.project?.project_title || "");
 
@@ -75,7 +61,6 @@ export default function MatchedResearchers({
               item.researcher.researcher_id,
               {
                 ...item.researcher,
-                //researcher_number: item.researcher.researcher_number,
                 matching_reason: item.matching_reason,
                 matching_status: item.matching_status,
                 hasNewMessage: item.has_new_message || false,
