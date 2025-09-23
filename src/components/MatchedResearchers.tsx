@@ -55,6 +55,17 @@ export default function MatchedResearchers({
 
         setProjectTitle(data.project_title || "");
 
+        // プロジェクトデータをExcel出力用に保存
+        const projectInfo = {
+          title: data.project_title || "",
+          background: data.project_content || "",
+          industry: data.industry_category || "",
+          businessDescription: data.business_description || "",
+          university: data.university || [],
+          researcherLevel: data.preferred_researcher_level || []
+        };
+        setProjectData(projectInfo);
+
         // APIレスポンスの構造に合わせて直接matched_researchersを使用
         const researchers = data.matched_researchers || [];
         console.log("🔍 サンプル研究者データ:", researchers[0]);
