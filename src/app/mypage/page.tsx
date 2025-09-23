@@ -98,8 +98,8 @@ export default function MyPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {projects.map((project, index) => (
-                <div key={project.project_id || index} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                  <div className="mb-4">
+                <div key={project.project_id || index} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm flex flex-col h-full">
+                  <div className="mb-4 flex-grow">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
                       No.{project.project_id || index + 1}
                     </h3>
