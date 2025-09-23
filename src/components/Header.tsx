@@ -45,7 +45,14 @@ const Header = () => {
             className="w-5 h-5"
           >
             <path
-              d="M8 6H21M8 12H21M8 18H21M3 6H3.01M3 12H3.01M3 18H3.01"
+              d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M9 22V12H15V22"
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
@@ -69,7 +76,14 @@ const Header = () => {
             className="w-5 h-5"
           >
             <path
-              d="M12 5V19M5 12H19"
+              d="M12 20H21"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M16.5 3.5C16.8978 3.10217 17.4374 2.87868 18 2.87868C18.2786 2.87868 18.5544 2.93355 18.8118 3.04014C19.0692 3.14674 19.303 3.303 19.5 3.5C19.697 3.697 19.8533 3.93085 19.9599 4.18823C20.0665 4.44561 20.1213 4.72141 20.1213 5C20.1213 5.27859 20.0665 5.55439 19.9599 5.81177C19.8533 6.06915 19.697 6.303 19.5 6.5L7 19L3 20L4 16L16.5 3.5Z"
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
@@ -80,7 +94,9 @@ const Header = () => {
         </Link>
 
         {/* ユーザーID */}
-        <span className="text-gray-700">{userID}</span>
+        <span className="text-gray-700">
+          {userID} | name: {session?.user?.name} | id: {session?.user?.id}
+        </span>
 
         {/* ログアウトアイコン */}
         <button
