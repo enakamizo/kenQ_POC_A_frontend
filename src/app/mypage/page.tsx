@@ -8,12 +8,49 @@ export default function MyPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [selectedUser, setSelectedUser] = useState("全案件");
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // 案件データを取得する関数
+  const fetchProjects = async () => {
+    if (!session?.user?.id) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project-info`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          company_id: session.user.id
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setProjects(data.projects || []);
+      } else {
+        console.error('案件取得エラー:', response.statusText);
+      }
+    } catch (error) {
+      console.error('API呼び出しエラー:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
     }
   }, [status, router]);
+
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetchProjects();
+    }
+  }, [session]);
 
   if (status === "loading") {
     return (
@@ -47,25 +84,45 @@ export default function MyPage() {
             </select>
           </div>
 
-          <div className="space-y-6">
-            <div className="border-b pb-4">
-              <h2 className="text-lg font-semibold text-gray-800 mb-3">ユーザー情報</h2>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <span className="text-gray-600 w-24">ユーザー名:</span>
-                  <span className="text-gray-900">{session.user?.company_user_name || "未設定"}</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-gray-600 w-24">名前:</span>
-                  <span className="text-gray-900">{session.user?.name || "未設定"}</span>
-                </div>
-              </div>
+          {/* 案件カード一覧 */}
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="text-gray-600">読み込み中...</div>
             </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projects.map((project, index) => (
+                <div key={project.project_id || index} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      No.{project.project_id || index + 1}
+                    </h3>
+                    <h4 className="text-base text-gray-800 leading-relaxed">
+                      {project.project_title || "タイトル未設定"}
+                    </h4>
+                  </div>
 
-            <div className="text-gray-600">
-              マイページの機能は順次追加予定です。
+                  <div className="space-y-2 mb-4 text-sm text-gray-600">
+                    <div className="text-blue-600">
+                      お気に入りの研究者数: {project.favorite_count || 0}名
+                    </div>
+                    <div>登録日: {project.registration_date || "未設定"}</div>
+                    <div>登録者: {project.company_user_name || "未設定"}</div>
+                  </div>
+
+                  <button className="w-full py-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-colors">
+                    詳細
+                  </button>
+                </div>
+              ))}
             </div>
-          </div>
+          )}
+
+          {!loading && projects.length === 0 && (
+            <div className="text-center py-8">
+              <div className="text-gray-600">案件が見つかりませんでした。</div>
+            </div>
+          )}
         </div>
       </div>
     </div>
