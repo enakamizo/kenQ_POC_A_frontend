@@ -33,7 +33,9 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const response = await fetch(`${apiUrl}/matching-results?project_id=${projectId}`, {
+    console.log(`Calling backend API: ${apiUrl}/matching-result/${projectId}`);
+
+    const response = await fetch(`${apiUrl}/matching-result/${projectId}`, {
       method: 'GET',
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -42,11 +44,14 @@ export async function GET(req: NextRequest) {
       }
     });
 
+    console.log(`Backend API response status: ${response.status}`);
+
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Backend API error:', errorText);
+      console.error('Backend API error response:', errorText);
+      console.error('Backend API error status:', response.status);
       return NextResponse.json(
-        { error: 'マッチング結果取得中にエラーが発生しました' },
+        { error: 'マッチング結果取得中にエラーが発生しました', backendError: errorText },
         { status: 500 }
       );
     }
