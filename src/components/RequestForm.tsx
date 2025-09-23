@@ -212,7 +212,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
           // company_user_idはサーバーサイドでセッションから取得
           project_title: localFormData.title,
           project_content: localFormData.background,
-          industry: localFormData.industry || "",
+          industry_category: localFormData.industry || "",
           business_description: localFormData.businessDescription || "",
           university: Array.isArray(formData.university) ? formData.university : [],
           preferred_researcher_level: Array.isArray(formData.researcherLevel) ? formData.researcherLevel : [],
