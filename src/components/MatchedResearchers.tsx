@@ -281,12 +281,12 @@ export default function MatchedResearchers({
       const isFavorite = favorites.includes(researcherId.toString()) ? "登録済み" : "未登録";
 
       return [
-        r.researcher_info?.name || r.researcher_name || "―",
-        r.researcher_info?.university || r.researcher_affiliation_current || "―",
-        r.researcher_info?.affiliation || r.researcher_department_current || "―",
-        r.researcher_info?.position || r.researcher_position_current || "―",
+        r.researcher_info?.researcher_name || "―",
+        r.researcher_info?.researcher_affiliation_current || "―",
+        r.researcher_info?.researcher_department_current || "―",
+        r.researcher_info?.researcher_position_current || "―",
         kakenUrl,
-        r.researcher_info?.explanation || r.explanation || r.matching_reason || "―",
+        r.matching_reason || r.researcher_info?.explanation || r.explanation || "―",
         isFavorite
       ];
     });
