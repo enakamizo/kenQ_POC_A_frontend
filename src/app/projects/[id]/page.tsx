@@ -94,7 +94,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                     <p>案件データを読み込み中...</p>
                 )}
             </div>
-            {/* <ProjectDetails projectId={projectId} setLoading={() => {}} /> */
+            {/* <ProjectDetails projectId={projectId} setLoading={() => {}} /> */}
 
             {/* 下段：おすすめの研究者リスト - 一時的に無効化 */}
             {/* <MatchedResearchers projectId={projectId} setLoading={() => {}} /> */}
@@ -102,7 +102,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                 <h2 className="text-xl font-bold mb-4">マッチング結果</h2>
                 <p className="text-gray-600">マッチング結果を取得中にエラーが発生しました。担当者にお問い合わせください。</p>
             </div>
-            
+
             {/* 新規登録に戻るリンク */}
             <div className="mt-8 text-center">
                 <button
