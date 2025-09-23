@@ -120,7 +120,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
         body: JSON.stringify({
           project_title: localFormData.title,
           project_content: localFormData.background,
-          industry: localFormData.industry,
+          industry_category: localFormData.industry,
           business_description: localFormData.businessDescription,
           //university: localFormData.university || "",
           university: Array.isArray(formData.university)
