@@ -25,14 +25,11 @@ export default function MyPage() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.API_URL}/project-info`, {
-        method: 'POST',
+      const response = await fetch(`${process.env.API_URL}/project-info?company_id=${session.user.id}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          company_id: session.user.id
-        }),
       });
 
       if (response.ok) {
