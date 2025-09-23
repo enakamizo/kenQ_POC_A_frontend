@@ -29,15 +29,25 @@ jobs:
           npm run build --if-present
           npm run test --if-present
       
-      - name: Copy artifact for deployment job    # 変更点➀
+      - name: Remove node_modules
+        run: rm -rf node_modules
+
+      - name: Copy artifact for deployment job
         run: |
           mkdir deploy
-          cp -r ./.next/standalone/. ./deploy
-          cp -r ./public ./deploy
-          cp -r ./.next/static/. ./deploy/.next/static
+          cp -r ./.next/standalone/. ./deploy || echo "standalone not found, using .next instead"
+          if [ ! -d "./deploy" ] || [ -z "$(ls -A ./deploy)" ]; then
+            rm -rf deploy
+            mkdir deploy
+            cp -r ./.next ./deploy/
+            cp -r ./public ./deploy/
+          else
+            cp -r ./public ./deploy
+            cp -r ./.next/static/. ./deploy/.next/static
+          fi
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./deploy -r   # 変更点➁
+        run: zip release.zip ./deploy -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
