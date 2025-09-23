@@ -4,11 +4,19 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+interface Project {
+  project_id: string;
+  project_title: string;
+  favorite_count: number;
+  registration_date: string;
+  company_user_name: string;
+}
+
 export default function MyPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [selectedUser, setSelectedUser] = useState("全案件");
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(false);
 
   // 案件データを取得する関数
