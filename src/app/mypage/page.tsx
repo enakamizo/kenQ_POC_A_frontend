@@ -25,7 +25,7 @@ export default function MyPage() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project-info`, {
+      const response = await fetch(`${process.env.API_URL}/project-info`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
