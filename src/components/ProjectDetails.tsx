@@ -17,18 +17,28 @@ export default function ProjectDetails({
   useEffect(() => {
     const fetchProjectDetails = async () => {
       try {
-        // localStorageからプロジェクトデータを取得
-        const storedData = localStorage.getItem(`project_${projectId}`);
-        if (storedData) {
-          const data = JSON.parse(storedData);
-          // console.log("ProjectDetails - 取得したデータ:", data.projectData);
-          setProject(data.projectData);
-          setLoading(false);
-          return;
+        // APIからプロジェクトデータを取得
+        const response = await fetch(`/api/projects?company_id=1`);
+        if (response.ok) {
+          const data = await response.json();
+          const project = data.projects?.find((p: any) => p.project_id.toString() === projectId);
+          if (project) {
+            // APIレスポンスの形式に合わせて変換
+            const projectData = {
+              title: project.project_title,
+              background: project.project_content,
+              industry: project.industry_category,
+              businessDescription: project.business_description,
+              university: project.university || [],
+              researcherLevel: project.preferred_researcher_level || []
+            };
+            setProject(projectData);
+          } else {
+            console.error("Project not found for ID:", projectId);
+          }
+        } else {
+          console.error("Failed to fetch project data");
         }
-        
-        // localStorageにデータがない場合はプロジェクト情報なし
-        // console.log("ProjectDetails - localStorageにプロジェクトデータが見つかりません");
       } catch (error) {
         console.error("プロジェクト情報取得エラー:", error);
       } finally {

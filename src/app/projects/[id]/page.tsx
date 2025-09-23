@@ -94,7 +94,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                     <p>案件データを読み込み中...</p>
                 )}
             </div>
-            {/* <ProjectDetails projectId={projectId} setLoading={() => {}} /> */}
+            <ProjectDetails projectId={projectId} setLoading={() => {}} />
 
             {/* 下段：おすすめの研究者リスト */}
             <MatchedResearchers projectId={projectId} setLoading={() => {}} />
