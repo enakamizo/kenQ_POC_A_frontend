@@ -8,7 +8,7 @@ const Header = () => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { data: session } = useSession();
   
-  const userID = session?.user?.company_user_name || "ユーザー";
+  const userName = session?.user?.name || "ユーザー";
 
   const handleLogout = async () => {
     // NextAuthのログアウト処理
@@ -93,10 +93,8 @@ const Header = () => {
           新規登録
         </Link>
 
-        {/* ユーザーID */}
-        <span className="text-gray-700">
-          {userID} | name: {session?.user?.name} | id: {session?.user?.id}
-        </span>
+        {/* ユーザー名 */}
+        <span className="text-gray-700">{userName}</span>
 
         {/* ログアウトアイコン */}
         <button
