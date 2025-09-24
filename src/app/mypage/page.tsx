@@ -74,7 +74,7 @@ export default function MyPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-[1280px] mx-auto p-6">
+      <div className="max-w-[1600px] mx-auto p-6">
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-6">リサーチ案件一覧</h1>
 
@@ -96,7 +96,7 @@ export default function MyPage() {
               <div className="text-gray-600">読み込み中...</div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {projects.map((project, index) => (
                 <div key={project.project_id || index} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm flex flex-col h-full">
                   <div className="mb-4 flex-grow">
