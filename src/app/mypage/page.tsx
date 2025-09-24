@@ -19,16 +19,14 @@ export default function MyPage() {
   const [selectedUser, setSelectedUser] = useState("全案件");
   const [projects, setProjects] = useState<Project[]>([]);
   const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const [companyProjects, setCompanyProjects] = useState<Project[]>([]);
   const [companyUsers, setCompanyUsers] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // 案件データを取得する関数
-  const fetchProjects = async () => {
-    if (!session?.user?.id) return;
-
-    setLoading(true);
+  // 全案件データを取得する関数
+  const fetchAllProjects = async () => {
     try {
-      const response = await fetch(`/api/projects?company_id=${session.user.id}`, {
+      const response = await fetch('/api/all-projects', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -37,22 +35,48 @@ export default function MyPage() {
 
       if (response.ok) {
         const data = await response.json();
-        const sortedProjects = (data.projects || []).sort((a: Project, b: Project) => {
+        const projects = data.projects || data || [];
+        const sortedProjects = projects.sort((a: Project, b: Project) => {
           return parseInt(b.project_id) - parseInt(a.project_id);
         });
         setAllProjects(sortedProjects);
-        setProjects(sortedProjects);
 
-        // company_user_nameの一覧を作成
+        // company_user_nameの一覧を作成（全案件から）
         const uniqueUsers: string[] = Array.from(new Set(sortedProjects.map((project: Project) => project.company_user_name).filter((name: string) => name)));
         setCompanyUsers(uniqueUsers);
       } else {
-        console.error('案件取得エラー:', response.statusText);
+        console.error('全案件取得エラー:', response.status, response.statusText);
       }
     } catch (error) {
-      console.error('API呼び出しエラー:', error);
-    } finally {
-      setLoading(false);
+      console.error('全案件API呼び出しエラー:', error);
+    }
+  };
+
+  // 個人案件データを取得する関数
+  const fetchCompanyProjects = async () => {
+    if (!session?.user?.id) return;
+
+    try {
+      const response = await fetch(`/api/projects?company_id=${session.user.company_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const projects = data.projects || data || [];
+        const sortedProjects = projects.sort((a: Project, b: Project) => {
+          return parseInt(b.project_id) - parseInt(a.project_id);
+        });
+        setCompanyProjects(sortedProjects);
+      } else {
+        console.error('個人案件取得エラー:', response.status, response.statusText);
+        setCompanyProjects([]);
+      }
+    } catch (error) {
+      console.error('個人案件API呼び出しエラー:', error);
     }
   };
 
@@ -64,7 +88,9 @@ export default function MyPage() {
 
   useEffect(() => {
     if (session?.user?.id) {
-      fetchProjects();
+      setLoading(true);
+      Promise.all([fetchAllProjects(), fetchCompanyProjects()])
+        .finally(() => setLoading(false));
     }
   }, [session]);
 
@@ -77,6 +103,13 @@ export default function MyPage() {
       setProjects(filteredProjects);
     }
   }, [selectedUser, allProjects]);
+
+  // 初期表示の設定
+  useEffect(() => {
+    if (allProjects.length > 0) {
+      setProjects(allProjects);
+    }
+  }, [allProjects]);
 
   if (status === "loading") {
     return (

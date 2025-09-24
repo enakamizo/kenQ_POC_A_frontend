@@ -8,6 +8,7 @@ declare module "next-auth" {
       id: string;
       name: string;
       company_user_name?: string;
+      company_id?: string;
     };
   }
 
@@ -15,6 +16,7 @@ declare module "next-auth" {
     id: string;
     name: string;
     company_user_name?: string;
+    company_id?: string;
   }
 }
 
@@ -23,6 +25,7 @@ declare module "next-auth/jwt" {
     id: string;
     name: string;
     company_user_name?: string;
+    company_id?: string;
   }
 }
 
@@ -43,10 +46,11 @@ export const authOptions: NextAuthOptions = {
 
           const user = res.data;
           if (user) {
-            return { 
-              id: user.id, 
-              name: user.name, 
-              company_user_name: credentials?.company_user_name 
+            return {
+              id: user.id,
+              name: user.name,
+              company_user_name: credentials?.company_user_name,
+              company_id: user.company_id
             };
           }
           return null;
@@ -72,6 +76,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.name = user.name;
         token.company_user_name = user.company_user_name;
+        token.company_id = user.company_id;
       }
       return token;
     },
@@ -80,6 +85,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id;
         session.user.name = token.name;
         session.user.company_user_name = token.company_user_name;
+        session.user.company_id = token.company_id;
       }
       return session;
     },

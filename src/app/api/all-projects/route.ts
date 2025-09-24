@@ -13,9 +13,6 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const { searchParams } = new URL(req.url);
-    const companyId = searchParams.get('company_id') || session.user.company_id;
-
     const apiUrl = process.env.API_URL;
 
     if (!apiUrl) {
@@ -26,7 +23,8 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const response = await fetch(`${apiUrl}/project-info/${companyId}`, {
+    // 全案件取得（company_idを使用）
+    const response = await fetch(`${apiUrl}/project-info/${session.user.company_id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -41,7 +39,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(data);
 
   } catch (error) {
-    console.error('プロジェクト取得エラー:', error);
+    console.error('全案件取得エラー:', error);
     return NextResponse.json(
       { error: '担当者にご連絡ください' },
       { status: 500 }
