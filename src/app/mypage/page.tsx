@@ -44,7 +44,7 @@ export default function MyPage() {
         setProjects(sortedProjects);
 
         // company_user_nameの一覧を作成
-        const uniqueUsers = Array.from(new Set(sortedProjects.map(project => project.company_user_name).filter(name => name)));
+        const uniqueUsers = Array.from(new Set(sortedProjects.map((project: Project) => project.company_user_name).filter(name => name)));
         setCompanyUsers(uniqueUsers);
       } else {
         console.error('案件取得エラー:', response.statusText);
