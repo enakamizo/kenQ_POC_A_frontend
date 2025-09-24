@@ -35,7 +35,10 @@ export default function MyPage() {
 
       if (response.ok) {
         const data = await response.json();
-        setProjects(data.projects || []);
+        const sortedProjects = (data.projects || []).sort((a: Project, b: Project) => {
+          return parseInt(b.project_id) - parseInt(a.project_id);
+        });
+        setProjects(sortedProjects);
       } else {
         console.error('案件取得エラー:', response.statusText);
       }
