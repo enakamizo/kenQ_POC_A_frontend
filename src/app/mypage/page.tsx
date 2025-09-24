@@ -18,6 +18,8 @@ export default function MyPage() {
   const router = useRouter();
   const [selectedUser, setSelectedUser] = useState("全案件");
   const [projects, setProjects] = useState<Project[]>([]);
+  const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const [companyUsers, setCompanyUsers] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   // 案件データを取得する関数
@@ -38,7 +40,12 @@ export default function MyPage() {
         const sortedProjects = (data.projects || []).sort((a: Project, b: Project) => {
           return parseInt(b.project_id) - parseInt(a.project_id);
         });
+        setAllProjects(sortedProjects);
         setProjects(sortedProjects);
+
+        // company_user_nameの一覧を作成
+        const uniqueUsers = Array.from(new Set(sortedProjects.map(project => project.company_user_name).filter(name => name)));
+        setCompanyUsers(uniqueUsers);
       } else {
         console.error('案件取得エラー:', response.statusText);
       }
@@ -60,6 +67,16 @@ export default function MyPage() {
       fetchProjects();
     }
   }, [session]);
+
+  // フィルタリング処理
+  useEffect(() => {
+    if (selectedUser === "全案件") {
+      setProjects(allProjects);
+    } else {
+      const filteredProjects = allProjects.filter(project => project.company_user_name === selectedUser);
+      setProjects(filteredProjects);
+    }
+  }, [selectedUser, allProjects]);
 
   if (status === "loading") {
     return (
@@ -89,7 +106,9 @@ export default function MyPage() {
               className="w-64 px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="全案件">全案件</option>
-              <option value={session?.user?.name || "ユーザー"}>{session?.user?.name || "ユーザー"}</option>
+              {companyUsers.map((user) => (
+                <option key={user} value={user}>{user}</option>
+              ))}
             </select>
           </div>
 
