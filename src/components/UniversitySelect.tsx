@@ -44,7 +44,8 @@ export default function UniversitySelect({ value, onChange }: UniversitySelectPr
             onChange([], false);
         } else {
             setSelectionMode('regions');
-            // Keep current selection when switching to regions mode
+            // Clear all selections when switching to regions mode
+            onChange([], false);
         }
     };
 
