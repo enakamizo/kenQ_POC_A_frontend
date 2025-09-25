@@ -3,16 +3,27 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { data: session } = useSession();
-  
+  const router = useRouter();
+
   const userName = session?.user?.name || "ユーザー";
 
   const handleLogout = async () => {
     // NextAuthのログアウト処理
     await signOut({ callbackUrl: "/login" });
+  };
+
+  const handleReloadMyPage = () => {
+    // 現在のページがマイページの場合はリロード、そうでなければマイページに遷移
+    if (window.location.pathname === '/mypage') {
+      window.location.reload();
+    } else {
+      router.push('/mypage');
+    }
   };
 
 
@@ -31,9 +42,9 @@ const Header = () => {
 
       {/* 右側のユーザーエリア */}
       <div className="flex items-center gap-6">
-        {/* リサーチ案件一覧リンク */}
-        <Link
-          href="/mypage"
+        {/* リサーチ案件一覧ボタン */}
+        <button
+          onClick={handleReloadMyPage}
           className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition"
         >
           <svg
@@ -60,7 +71,7 @@ const Header = () => {
             />
           </svg>
           リサーチ案件一覧
-        </Link>
+        </button>
 
         {/* 新規登録リンク */}
         <Link
@@ -137,16 +148,16 @@ const Header = () => {
           <p className="text-gray-600 mb-6">ログアウトしますか？</p>
           <div className="flex justify-center gap-4">
             <button
-              onClick={() => setShowLogoutConfirm(false)}
-              className="px-6 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition"
-            >
-              いいえ
-            </button>
-            <button
               onClick={handleLogout}
               className="px-6 py-2 bg-black text-white rounded hover:bg-gray-800 transition"
             >
               はい
+            </button>
+            <button
+              onClick={() => setShowLogoutConfirm(false)}
+              className="px-6 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition"
+            >
+              いいえ
             </button>
           </div>
         </div>

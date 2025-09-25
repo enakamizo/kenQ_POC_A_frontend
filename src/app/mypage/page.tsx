@@ -16,7 +16,7 @@ interface Project {
 export default function MyPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [selectedUser, setSelectedUser] = useState("全案件");
+  const [selectedUser, setSelectedUser] = useState("");
   const [projects, setProjects] = useState<Project[]>([]);
   const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [companyProjects, setCompanyProjects] = useState<Project[]>([]);
@@ -89,6 +89,10 @@ export default function MyPage() {
   useEffect(() => {
     if (session?.user?.id) {
       setLoading(true);
+      // ログインユーザー名をデフォルト選択に設定
+      if (session?.user?.name) {
+        setSelectedUser(session.user.name);
+      }
       Promise.all([fetchAllProjects(), fetchCompanyProjects()])
         .finally(() => setLoading(false));
     }
@@ -106,10 +110,15 @@ export default function MyPage() {
 
   // 初期表示の設定
   useEffect(() => {
-    if (allProjects.length > 0) {
-      setProjects(allProjects);
+    if (allProjects.length > 0 && selectedUser) {
+      if (selectedUser === "全案件") {
+        setProjects(allProjects);
+      } else {
+        const filteredProjects = allProjects.filter(project => project.company_user_name === selectedUser);
+        setProjects(filteredProjects);
+      }
     }
-  }, [allProjects]);
+  }, [allProjects, selectedUser]);
 
   if (status === "loading") {
     return (
