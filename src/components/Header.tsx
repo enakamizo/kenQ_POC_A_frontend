@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 
 const Header = () => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showNavigateConfirm, setShowNavigateConfirm] = useState(false);
+  const [showRegisterReloadConfirm, setShowRegisterReloadConfirm] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -18,12 +20,38 @@ const Header = () => {
   };
 
   const handleReloadMyPage = () => {
-    // 現在のページがマイページの場合はリロード、そうでなければマイページに遷移
+    // 現在のページがマイページの場合はリロード
     if (window.location.pathname === '/mypage') {
       window.location.reload();
-    } else {
+    }
+    // 新規登録画面の場合は確認モーダルを表示
+    else if (window.location.pathname === '/register') {
+      setShowNavigateConfirm(true);
+    }
+    // その他の場合はマイページに直接遷移
+    else {
       router.push('/mypage');
     }
+  };
+
+  const handleConfirmNavigate = () => {
+    setShowNavigateConfirm(false);
+    router.push('/mypage');
+  };
+
+  const handleRegisterClick = () => {
+    // 現在のページが新規登録画面の場合は確認モーダルを表示
+    if (window.location.pathname === '/register') {
+      setShowRegisterReloadConfirm(true);
+    } else {
+      // その他の場合は新規登録画面に遷移
+      router.push('/register');
+    }
+  };
+
+  const handleConfirmRegisterReload = () => {
+    setShowRegisterReloadConfirm(false);
+    window.location.reload();
   };
 
 
@@ -73,9 +101,9 @@ const Header = () => {
           リサーチ案件一覧
         </button>
 
-        {/* 新規登録リンク */}
-        <Link
-          href="/register"
+        {/* 新規登録ボタン */}
+        <button
+          onClick={handleRegisterClick}
           className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition"
         >
           <svg
@@ -102,7 +130,7 @@ const Header = () => {
             />
           </svg>
           新規登録
-        </Link>
+        </button>
 
         {/* ユーザー名 */}
         <span className="text-gray-700">{userName}</span>
@@ -156,6 +184,56 @@ const Header = () => {
             <button
               onClick={() => setShowLogoutConfirm(false)}
               className="px-6 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition"
+            >
+              いいえ
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* 新規登録からの遷移確認ポップアップ */}
+    {showNavigateConfirm && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm w-full mx-4">
+          <h2 className="text-lg font-semibold mb-4">案件一覧への遷移確認</h2>
+          <p className="text-gray-600 mb-2">案件一覧に戻しますか？</p>
+          <p className="text-gray-600 mb-6">記入された情報は失われます。</p>
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={handleConfirmNavigate}
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium"
+            >
+              はい
+            </button>
+            <button
+              onClick={() => setShowNavigateConfirm(false)}
+              className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
+            >
+              いいえ
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* 新規登録画面リロード確認ポップアップ */}
+    {showRegisterReloadConfirm && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm w-full mx-4">
+          <h2 className="text-lg font-semibold mb-4">入力情報クリア確認</h2>
+          <p className="text-gray-600 mb-2">新規登録画面をリロードしますか？</p>
+          <p className="text-gray-600 mb-6">入力された情報はクリアされます。</p>
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={handleConfirmRegisterReload}
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium"
+            >
+              はい
+            </button>
+            <button
+              onClick={() => setShowRegisterReloadConfirm(false)}
+              className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
             >
               いいえ
             </button>
