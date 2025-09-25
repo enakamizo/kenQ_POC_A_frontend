@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import * as XLSX from 'xlsx';
+import universitiesBySubregion from "@/data/universities_by_subregion.json";
 
 //export default function MatchedResearchers({ projectId }: { projectId: string }) {
 export default function MatchedResearchers({
@@ -222,12 +223,15 @@ export default function MatchedResearchers({
   const handleExportExcel = () => {
     // console.log("📊 Excel出力開始 - researchers.length:", researchers.length);
     // console.log("📊 Researchers data:", researchers);
-    
+
     if (researchers.length === 0) {
       // console.log("📊 研究者データが空のため、Excel出力をスキップ");
       alert("エクスポートする研究者データがありません。");
       return;
     }
+
+    // 全大学数を計算
+    const totalUniversityCount = Object.values(universitiesBySubregion).flat().length;
 
     // 新しいワークブックを作成
     const wb = XLSX.utils.book_new();
@@ -241,12 +245,14 @@ export default function MatchedResearchers({
       ["事業内容", projectData?.businessDescription || "入力なし"],
       ["大学",
         typeof projectData?.university === "string" && projectData.university
-          ? `${projectData.university}（${projectData.university.split(',').length}校）`
+          ? projectData.university === "全大学" || projectData.university.includes("全大学")
+            ? `全大学（${totalUniversityCount}校）`
+            : `${projectData.university}（${projectData.university.split(',').length}校）`
           : Array.isArray(projectData?.university) && projectData.university.length > 0
           ? projectData.university.includes("全大学")
-            ? "全大学（118校）"
+            ? `全大学（${totalUniversityCount}校）`
             : `${projectData.university.join("/")}（${projectData.university.length}校）`
-          : "全大学（118校）"
+          : `全大学（${totalUniversityCount}校）`
       ],
       ["研究者階層",
         typeof projectData?.researcherLevel === "string" && projectData.researcherLevel
