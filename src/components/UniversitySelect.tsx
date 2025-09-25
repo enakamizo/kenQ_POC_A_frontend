@@ -7,21 +7,15 @@ type UniversitySelectProps = {
     onChange: (selected: string[], allSelected?: boolean) => void;
 };
 
-// お気に入りの大学リスト
-const favoriteUniversities = [
-    "東京大学", "大阪大学",
-    "東京科学大学", "慶應義塾大学"
-];
 
 export default function UniversitySelect({ value, onChange }: UniversitySelectProps) {
     const allUniversities = Object.values(universitiesBySubregion).flat();
     
-    const [selectionMode, setSelectionMode] = useState<'none' | 'all' | 'favorites' | 'regions'>('none');
+    const [selectionMode, setSelectionMode] = useState<'none' | 'all' | 'regions'>('none');
     
     // 現在の選択状態を value prop から算出
     const selectedUniversities = value?.includes("全大学") ? allUniversities : (value || []);
     const isAllSelected = selectedUniversities.length === allUniversities.length;
-    const isFavoritesSelected = selectionMode === 'favorites' && favoriteUniversities.every(u => selectedUniversities.includes(u)) && favoriteUniversities.some(u => selectedUniversities.includes(u));
 
     const handleToggleUniversity = (univ: string) => {
         const newSelected = selectedUniversities.includes(univ)
@@ -43,15 +37,6 @@ export default function UniversitySelect({ value, onChange }: UniversitySelectPr
         }
     };
 
-    const handleSelectFavorites = () => {
-        if (selectionMode === 'favorites') {
-            setSelectionMode('none');
-            onChange([], false);
-        } else {
-            setSelectionMode('favorites');
-            onChange(favoriteUniversities, false);
-        }
-    };
 
     const handleSelectRegions = () => {
         if (selectionMode === 'regions') {
@@ -98,37 +83,6 @@ export default function UniversitySelect({ value, onChange }: UniversitySelectPr
                     </label>
                 </div>
 
-                {/* お気に入りの大学 */}
-                <div>
-                    <label className="flex items-center space-x-2 text-sm">
-                        <input
-                            type="checkbox"
-                            checked={isFavoritesSelected}
-                            onChange={handleSelectFavorites}
-                            className="w-4 h-4 accent-blue-500"
-                        />
-                        <span>お気に入りの大学</span>
-                    </label>
-                </div>
-
-                {/* お気に入り大学の詳細表示 */}
-                {selectionMode === 'favorites' && (
-                    <div className="ml-6 mt-3 bg-white p-4 rounded border">
-                        <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-                            {favoriteUniversities.map((univ) => (
-                                <label key={univ} className="flex items-center space-x-2 text-sm">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedUniversities.includes(univ)}
-                                        onChange={() => handleToggleUniversity(univ)}
-                                        className="w-4 h-4 accent-blue-500"
-                                    />
-                                    <span>{univ}</span>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-                )}
 
                 {/* エリアから選択 */}
                 <div>
