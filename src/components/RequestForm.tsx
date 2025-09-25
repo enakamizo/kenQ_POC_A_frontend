@@ -510,17 +510,17 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
               </p>
               <div className="flex gap-3 justify-end">
                 <button
-                  className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
-                  onClick={() => setShowConfirmModal(false)}
-                >
-                  キャンセル
-                </button>
-                <button
                   className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium flex items-center gap-2"
                   onClick={executeDiagnosis}
                 >
                   <span>✨</span>
                   AIアシストを実行
+                </button>
+                <button
+                  className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
+                  onClick={() => setShowConfirmModal(false)}
+                >
+                  キャンセル
                 </button>
               </div>
             </div>
@@ -550,16 +550,16 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
               
               <div className="flex gap-3 justify-end">
                 <button
-                  className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
-                  onClick={() => setShowModal(false)}
-                >
-                  キャンセル
-                </button>
-                <button
                   className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium"
                   onClick={applyDiagnosisResult}
                 >
                   提案を適用
+                </button>
+                <button
+                  className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
+                  onClick={() => setShowModal(false)}
+                >
+                  キャンセル
                 </button>
               </div>
             </div>

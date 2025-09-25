@@ -577,16 +577,16 @@ export default function MatchedResearchers({
             <p className="text-gray-600 mb-6">お気に入りの研究者を登録しますか？</p>
             <div className="flex justify-center gap-4">
               <button
-                onClick={() => setShowFavoriteConfirm(false)}
-                className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
-              >
-                いいえ
-              </button>
-              <button
                 onClick={handleSubmitFavorites}
                 className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium"
               >
                 はい
+              </button>
+              <button
+                onClick={() => setShowFavoriteConfirm(false)}
+                className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
+              >
+                いいえ
               </button>
             </div>
           </div>
