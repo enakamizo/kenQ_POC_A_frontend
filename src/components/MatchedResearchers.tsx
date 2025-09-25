@@ -243,7 +243,9 @@ export default function MatchedResearchers({
         typeof projectData?.university === "string" && projectData.university
           ? `${projectData.university}（${projectData.university.split(',').length}校）`
           : Array.isArray(projectData?.university) && projectData.university.length > 0
-          ? `${projectData.university.join("/")}（${projectData.university.length}校）`
+          ? projectData.university.includes("全大学")
+            ? "全大学（118校）"
+            : `${projectData.university.join("/")}（${projectData.university.length}校）`
           : "全大学（118校）"
       ],
       ["研究者階層",
