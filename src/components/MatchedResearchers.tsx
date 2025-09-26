@@ -528,7 +528,7 @@ export default function MatchedResearchers({
               onClick={() => router.push("/register")}
               className="w-full py-3 bg-gray-700 text-white rounded-lg shadow-md hover:bg-gray-600 transition duration-200"
             >
-              案件登録に戻る
+              新規登録に戻る
             </button>
           </div>
         </div>
