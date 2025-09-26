@@ -407,7 +407,7 @@ export default function MatchedResearchers({
                     href={`https://nrid.nii.ac.jp/ja/nrid/1${(researcher.researcher_info?.researcher_id || researcher.matching_id).toString().padStart(12, '0')}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-1 py-0.5 bg-blue-500 text-white rounded hover:bg-blue-600 transition whitespace-nowrap"
+                    className="inline-flex items-center px-1 py-0.5 bg-blue-400 text-white rounded hover:bg-blue-500 transition whitespace-nowrap"
                     style={{ fontSize: '8px' }}
                   >
                     プロフィール
@@ -504,7 +504,7 @@ export default function MatchedResearchers({
             }
             setShowFavoriteConfirm(true);
           }}
-          className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium flex items-center gap-2"
+          className="px-6 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition font-medium flex items-center gap-2"
         >
           <span>☆</span>
           お気に入りを保存する
@@ -526,7 +526,7 @@ export default function MatchedResearchers({
             <h2 className="text-xl font-bold mb-4">オファーしました！</h2>
             <button
               onClick={() => router.push("/register")}
-              className="w-full py-3 bg-gray-700 text-white rounded-lg shadow-md hover:bg-gray-600 transition duration-200"
+              className="w-full py-3 bg-gray-700 text-white rounded-lg shadow-md hover:bg-gray-800 transition duration-200"
             >
               新規登録に戻る
             </button>
@@ -563,7 +563,7 @@ export default function MatchedResearchers({
             </div>
             <button
               onClick={() => router.push(`/researcher/${selectedResearcher.researcher_id}`)}
-              className="w-full py-2 bg-blue-800 text-white rounded hover:bg-blue-500 transition"
+              className="w-full py-2 bg-blue-400 text-white rounded hover:bg-blue-500 transition"
             >
               詳細を見る
             </button>
@@ -586,7 +586,7 @@ export default function MatchedResearchers({
             <div className="flex justify-center gap-4">
               <button
                 onClick={handleSubmitFavorites}
-                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium"
+                className="px-6 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition font-medium"
               >
                 はい
               </button>
@@ -612,7 +612,7 @@ export default function MatchedResearchers({
                 setShowFavoriteSuccess(false);
                 // お気に入り選択はリセットしない（黄色い星を保持）
               }}
-              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium"
+              className="px-6 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition font-medium"
             >
               OK
             </button>

@@ -181,7 +181,7 @@ const Header = () => {
           <div className="flex justify-center gap-4">
             <button
               onClick={handleLogout}
-              className="px-6 py-2 bg-black text-white rounded hover:bg-gray-800 transition"
+              className="px-6 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 transition"
             >
               はい
             </button>
@@ -206,7 +206,7 @@ const Header = () => {
           <div className="flex justify-center gap-4">
             <button
               onClick={handleConfirmNavigate}
-              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium"
+              className="px-6 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition font-medium"
             >
               はい
             </button>
@@ -231,7 +231,7 @@ const Header = () => {
           <div className="flex justify-center gap-4">
             <button
               onClick={handleConfirmRegisterReload}
-              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium"
+              className="px-6 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition font-medium"
             >
               はい
             </button>

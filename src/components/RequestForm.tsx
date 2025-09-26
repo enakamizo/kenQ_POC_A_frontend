@@ -304,7 +304,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
                   router.push(`/projects/${projectId}`);
                 }
               }}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="px-6 py-3 bg-blue-400 text-white rounded-lg hover:bg-blue-500"
             >
               結果に進む
             </button>
@@ -511,7 +511,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
               </p>
               <div className="flex gap-3 justify-end">
                 <button
-                  className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium flex items-center gap-2"
+                  className="px-6 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition font-medium flex items-center gap-2"
                   onClick={executeDiagnosis}
                 >
                   <span>✨</span>
@@ -551,7 +551,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
               
               <div className="flex gap-3 justify-end">
                 <button
-                  className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium"
+                  className="px-6 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition font-medium"
                   onClick={applyDiagnosisResult}
                 >
                   提案を適用
@@ -693,7 +693,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
 
       {/* ボタン */}
       <div className="flex justify-center">
-        <button type="submit" className="bg-gray-800 text-white font-semibold px-8 py-3 rounded-lg hover:bg-gray-900">
+        <button type="submit" className="bg-gray-700 text-white font-semibold px-8 py-3 rounded-lg hover:bg-gray-800">
           案件登録
         </button>
       </div>
