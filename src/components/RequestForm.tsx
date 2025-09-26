@@ -34,6 +34,9 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
   const [showModal, setShowModal] = useState(false);
   const [diagnosisResult, setDiagnosisResult] = useState<string | null>(null);
 
+  // ✅ AIリサーチ実行確認モーダル
+  const [showResearchConfirmModal, setShowResearchConfirmModal] = useState(false);
+
   // ✅ 研究者マッチング状態管理
   const [isResearching, setIsResearching] = useState(false);
   const [researchCompleted, setResearchCompleted] = useState(false);
@@ -60,8 +63,8 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
 
   // ✅ 処理状態を親コンポーネントに通知
   useEffect(() => {
-    onStatusChange?.(isResearching || showConfirmModal || loading || researchCompleted);
-  }, [isResearching, showConfirmModal, loading, researchCompleted, onStatusChange]);
+    onStatusChange?.(isResearching || showConfirmModal || loading || researchCompleted || showResearchConfirmModal);
+  }, [isResearching, showConfirmModal, loading, researchCompleted, showResearchConfirmModal, onStatusChange]);
 
   const handleDiagnosis = () => {
     // 案件タイトルと案件内容のみ必須チェック
@@ -176,6 +179,12 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
       return;
     }
 
+    // AIリサーチ実行確認モーダルを表示
+    setShowResearchConfirmModal(true);
+  };
+
+  const executeAIResearch = async () => {
+    setShowResearchConfirmModal(false);
     setIsResearching(true);
 
     try {
@@ -260,6 +269,16 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
             
             <div className="space-y-2 text-sm text-gray-600">
               <div>
+                <p><span className="font-medium">業種:</span> {
+                  formData.industry || "未指定"
+                }</p>
+              </div>
+              <div>
+                <p><span className="font-medium">事業内容:</span> {
+                  formData.businessDescription || "未指定"
+                }</p>
+              </div>
+              <div>
                 <p><span className="font-medium">対象大学:</span> {
                   Array.isArray(formData.university) && formData.university.includes("全大学")
                     ? `全大学（${Object.values(universitiesBySubregion).flat().length}校）`
@@ -332,8 +351,14 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
           
           <div className="bg-blue-50 p-6 rounded-lg mb-8 text-left">
             <h2 className="text-lg font-semibold text-blue-800 mb-4">リサーチ中の案件</h2>
-            <h3 className="text-blue-600 font-medium mb-2">{formData.title}</h3>
+            <h3 className="text-blue-600 font-medium mb-3">{formData.title}</h3>
             <div className="text-sm text-gray-600 space-y-1">
+              <p><span className="font-medium">業種:</span> {
+                formData.industry || "未指定"
+              }</p>
+              <p><span className="font-medium">事業内容:</span> {
+                formData.businessDescription || "未指定"
+              }</p>
               <p><span className="font-medium">対象大学:</span> {
                 Array.isArray(formData.university) && formData.university.includes("全大学")
                   ? `全大学（${Object.values(universitiesBySubregion).flat().length}校）`
@@ -672,6 +697,34 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
           案件登録
         </button>
       </div>
+
+      {/* AIリサーチ実行確認モーダル */}
+      {showResearchConfirmModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
+            <div className="flex items-center mb-4">
+              <h2 className="text-lg font-semibold">AIリサーチ実行確認</h2>
+            </div>
+            <p className="text-gray-700 text-sm mb-6">
+              AIでのリサーチを実行しますか？登録された案件内容を基に、最適な研究者をAIが分析・レコメンドします。
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium"
+                onClick={executeAIResearch}
+              >
+                はい
+              </button>
+              <button
+                className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
+                onClick={() => setShowResearchConfirmModal(false)}
+              >
+                いいえ
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </form>
   );
