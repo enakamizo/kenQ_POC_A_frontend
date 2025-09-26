@@ -30,7 +30,7 @@ const initialFormData: FormDataType = {
   businessDescription: "",
   university: [],
   researchField: "",
-  researcherLevel: [...allResearcherLevels],
+  researcherLevel: [],
   deadline: "",
 };
 
