@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useFormContext } from "@/context/FormContext";
 
 const Header = () => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -11,6 +12,7 @@ const Header = () => {
   const [showRegisterReloadConfirm, setShowRegisterReloadConfirm] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
+  const { resetForm } = useFormContext();
 
   const userName = session?.user?.name || "ユーザー";
 
@@ -36,6 +38,7 @@ const Header = () => {
 
   const handleConfirmNavigate = () => {
     setShowNavigateConfirm(false);
+    resetForm();
     router.push('/mypage');
   };
 
@@ -45,13 +48,14 @@ const Header = () => {
       setShowRegisterReloadConfirm(true);
     } else {
       // その他の場合は新規登録画面に遷移
+      resetForm();
       router.push('/register');
     }
   };
 
   const handleConfirmRegisterReload = () => {
     setShowRegisterReloadConfirm(false);
-    window.location.reload();
+    resetForm();
   };
 
 

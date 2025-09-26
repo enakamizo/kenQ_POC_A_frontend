@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 // 研究者階層の定義
-const allResearcherLevels = [
+export const allResearcherLevels = [
   "教授", "准教授", "助教", "講師", "助教授", "助手",
   "研究員", "特任助教", "主任研究員", "特任教授",
 ];
@@ -30,7 +30,7 @@ const initialFormData: FormDataType = {
   businessDescription: "",
   university: [],
   researchField: "",
-  researcherLevel: [],
+  researcherLevel: [...allResearcherLevels],
   deadline: "",
 };
 
@@ -39,6 +39,7 @@ type FormContextType = {
   formData: FormDataType;
   setFormData: React.Dispatch<React.SetStateAction<FormDataType>>;
   resetForm: () => void;
+  resetKey: number;
 };
 
 // Context を null 可能にする
@@ -46,13 +47,15 @@ const FormContext = createContext<FormContextType | null>(null);
 
 export function FormProvider({ children }: { children: ReactNode }) {
   const [formData, setFormData] = useState<FormDataType>(initialFormData);
+  const [resetKey, setResetKey] = useState<number>(0);
 
   const resetForm = () => {
     setFormData(initialFormData);
+    setResetKey(prev => prev + 1);
   };
 
   return (
-    <FormContext.Provider value={{ formData, setFormData, resetForm }}>
+    <FormContext.Provider value={{ formData, setFormData, resetForm, resetKey }}>
       {children}
     </FormContext.Provider>
   );

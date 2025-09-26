@@ -2,14 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useFormContext } from "@/context/FormContext";
+import { useFormContext, allResearcherLevels } from "@/context/FormContext";
 import UniversitySelect from "@/components/UniversitySelect";
 import universitiesBySubregion from "@/data/universities_by_subregion.json";
-
-const allResearcherLevels = [
-  "教授", "准教授", "助教", "講師", "助教授", "助手",
-  "研究員", "特任助教", "主任研究員", "特任教授",
-];
 
 type FormDataType = {
   title: string;
@@ -30,19 +25,6 @@ type RequestFormProps = {
 export default function RequestForm({ onSubmit, onStatusChange }: RequestFormProps) {
   const router = useRouter();
   const { formData, setFormData } = useFormContext();
-
-  const initialData: FormDataType = {
-    title: "",
-    background: "",
-    industry: "",
-    businessDescription: "",
-    university: [],
-    researchField: "",
-    researcherLevel: [...allResearcherLevels],
-    deadline: "",
-  };
-
-  const [localFormData, setLocalFormData] = useState<FormDataType>(formData || initialData);
   const [selectedUniversities, setSelectedUniversities] = useState<string[]>([]);
   const [loading, setLoading] = useState(false); // ←診断中に「しばらくお待ちください。」を表示するため
   const [validationError, setValidationError] = useState<string | null>(null); // ←AIアシストのため５つの項目すべてに入力してもらう注意を表示するため
@@ -58,12 +40,8 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
   const [projectId, setProjectId] = useState<number | null>(null);
   const [researchResults, setResearchResults] = useState<any>(null);
 
-  // 削除: 無限ループの原因となるuseEffectを削除
-
-  // ✅ formData をもとに localFormData や selectedUniversities を初期化
+  // ✅ formData をもとに selectedUniversities を初期化
   useEffect(() => {
-    setLocalFormData(formData);
-
     let universityArray =
       Array.isArray(formData.university)
         ? formData.university
@@ -88,8 +66,8 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
   const handleDiagnosis = () => {
     // 案件タイトルと案件内容のみ必須チェック
     if (
-      !localFormData.title ||
-      !localFormData.background
+      !formData.title ||
+      !formData.background
     ) {
       setValidationError("案件タイトルと案件内容の両方を入力してから案件入力AIアシストをご利用ください。");
       return;
@@ -100,14 +78,13 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
 
   const applyDiagnosisResult = () => {
     if (diagnosisResult) {
-      setLocalFormData(prev => ({ ...prev, background: diagnosisResult }));
       setFormData(prev => ({ ...prev, background: diagnosisResult }));
       setShowModal(false);
     }
   };
 
   const executeDiagnosis = async () => {
-    // console.log("送信内容", localFormData);
+    // console.log("送信内容", formData);
     setShowConfirmModal(false);
     setLoading(true); // ← しばらくお待ちください。の表示のため
 
@@ -118,10 +95,10 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          project_title: localFormData.title,
-          project_content: localFormData.background,
-          industry_category: localFormData.industry,
-          business_description: localFormData.businessDescription,
+          project_title: formData.title,
+          project_content: formData.background,
+          industry_category: formData.industry,
+          business_description: formData.businessDescription,
           //university: localFormData.university || "",
           university: Array.isArray(formData.university)
             ? formData.university
@@ -130,8 +107,8 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
             ? formData.researcherLevel
             : formData.researcherLevel ? [formData.researcherLevel] : [],
           application_deadline:
-            localFormData.deadline && localFormData.deadline.trim() !== ""
-              ? localFormData.deadline
+            formData.deadline && formData.deadline.trim() !== ""
+              ? formData.deadline
               : "2099-12-31", // ←★ここが重要
           // company_user_idはサーバーサイドでセッションから取得
         }),
@@ -165,7 +142,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
+
     // 文字数制限チェック
     let processedValue = value;
     if (name === 'title' && value.length > 40) {
@@ -175,25 +152,24 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
     } else if (name === 'businessDescription' && value.length > 100) {
       processedValue = value.slice(0, 100);
     }
-    
-    setLocalFormData((prev) => ({ ...prev, [name]: processedValue }));
+
     setFormData((prev) => ({ ...prev, [name]: processedValue }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (onSubmit) {
-      onSubmit(localFormData);
+      onSubmit(formData);
       return;
     }
 
     // 必須項目のバリデーション
     const missingFields = [];
-    if (!localFormData.title) missingFields.push("案件タイトル");
-    if (!localFormData.background) missingFields.push("案件内容");
+    if (!formData.title) missingFields.push("案件タイトル");
+    if (!formData.background) missingFields.push("案件内容");
     if (!formData.university || formData.university.length === 0) missingFields.push("大学");
-    if (!localFormData.researcherLevel || localFormData.researcherLevel.length === 0) missingFields.push("研究者階層");
+    if (!formData.researcherLevel || formData.researcherLevel.length === 0) missingFields.push("研究者階層");
 
     if (missingFields.length > 0) {
       setValidationError(`必須項目を入力してください：${missingFields.join("、")}`);
@@ -210,10 +186,10 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
         },
         body: JSON.stringify({
           // company_user_idはサーバーサイドでセッションから取得
-          project_title: localFormData.title,
-          project_content: localFormData.background,
-          industry_category: localFormData.industry || "",
-          business_description: localFormData.businessDescription || "",
+          project_title: formData.title,
+          project_content: formData.background,
+          industry_category: formData.industry || "",
+          business_description: formData.businessDescription || "",
           university: Array.isArray(formData.university) ? formData.university : [],
           preferred_researcher_level: Array.isArray(formData.researcherLevel) ? formData.researcherLevel : [],
         }),
@@ -234,12 +210,12 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
       localStorage.setItem(`project_${projectId}`, JSON.stringify({
         projectData: {
           id: projectId,
-          title: localFormData.title,
-          background: localFormData.background,
-          industry: localFormData.industry,
-          businessDescription: localFormData.businessDescription,
+          title: formData.title,
+          background: formData.background,
+          industry: formData.industry,
+          businessDescription: formData.businessDescription,
           university: formData.university,
-          researcherLevel: localFormData.researcherLevel
+          researcherLevel: formData.researcherLevel
         },
         matchingResults: result
       }));
@@ -294,8 +270,8 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
               </div>
               <div>
                 <p><span className="font-medium">研究者階層:</span> {
-                  Array.isArray(localFormData.researcherLevel) && localFormData.researcherLevel.length > 0
-                    ? `${localFormData.researcherLevel.length}項目`
+                  Array.isArray(formData.researcherLevel) && formData.researcherLevel.length > 0
+                    ? `${formData.researcherLevel.length}項目`
                     : "未指定"
                 }</p>
               </div>
@@ -356,7 +332,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
           
           <div className="bg-blue-50 p-6 rounded-lg mb-8 text-left">
             <h2 className="text-lg font-semibold text-blue-800 mb-4">リサーチ中の案件</h2>
-            <h3 className="text-blue-600 font-medium mb-2">{localFormData.title}</h3>
+            <h3 className="text-blue-600 font-medium mb-2">{formData.title}</h3>
             <div className="text-sm text-gray-600 space-y-1">
               <p><span className="font-medium">対象大学:</span> {
                 Array.isArray(formData.university) && formData.university.includes("全大学")
@@ -364,8 +340,8 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
                   : `${Array.isArray(formData.university) ? formData.university.length : 0}校`
               }</p>
               <p><span className="font-medium">研究者階層:</span> {
-                Array.isArray(localFormData.researcherLevel) && localFormData.researcherLevel.length > 0
-                  ? `${localFormData.researcherLevel.length}項目`
+                Array.isArray(formData.researcherLevel) && formData.researcherLevel.length > 0
+                  ? `${formData.researcherLevel.length}項目`
                   : "未指定"
               }</p>
             </div>
@@ -387,7 +363,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
           <input
             type="text"
             name="title"
-            value={localFormData.title}
+            value={formData.title}
             onChange={handleChange}
             maxLength={40}
             placeholder="タイトルを入力してください"
@@ -395,7 +371,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
           />
           <div className="text-right -mt-1 mb-2">
             <span className="text-xs text-gray-400">
-              {localFormData.title.length}/40文字
+              {formData.title.length}/40文字
             </span>
           </div>
         </div>
@@ -405,7 +381,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
         <label className="block text-sm font-medium mb-1">案件内容（2000文字以内）<span className="text-red-500">*</span></label>
         <textarea
           name="background"
-          value={localFormData.background}
+          value={formData.background}
           onChange={handleChange}
           placeholder="案件内容を記載してください"
           maxLength={2000}
@@ -414,7 +390,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
         />
         <div className="text-right -mt-1 mb-2">
           <span className="text-xs text-gray-400">
-            {localFormData.background.length}/2000文字
+            {formData.background.length}/2000文字
           </span>
         </div>
       </div>
@@ -424,7 +400,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
         <label className="block text-sm font-medium mb-1">業種</label>
         <select
           name="industry"
-          value={localFormData.industry}
+          value={formData.industry}
           onChange={handleChange}
           className="w-full p-2 pr-8 border border-gray-300 rounded-lg"
         >
@@ -470,7 +446,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
         <label className="block text-sm font-medium mb-1">事業内容（100文字以内）</label>
         <textarea
           name="businessDescription"
-          value={localFormData.businessDescription}
+          value={formData.businessDescription}
           onChange={handleChange}
           placeholder="事業内容を記載してください"
           maxLength={100}
@@ -479,7 +455,7 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
         />
         <div className="text-right -mt-1 mb-2">
           <span className="text-xs text-gray-400">
-            {localFormData.businessDescription.length}/100文字
+            {formData.businessDescription.length}/100文字
           </span>
         </div>
 
@@ -633,7 +609,6 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
               const updated = isAllSelected ? ["全大学"] : value;
 
               setFormData(prev => ({ ...prev, university: updated }));
-              setLocalFormData((prev) => ({ ...prev, university: updated }));
               setSelectedUniversities(value); // Use the actual selected universities, not the compressed format
             }}
           />
@@ -652,11 +627,10 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
             <label className="flex items-center space-x-2 text-sm">
               <input
                 type="checkbox"
-                checked={localFormData.researcherLevel.length === allResearcherLevels.length}
+                checked={formData.researcherLevel.length === allResearcherLevels.length}
                 onChange={(e) => {
                   const isChecked = e.target.checked;
                   const updatedLevels = isChecked ? allResearcherLevels : [];
-                  setLocalFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
                   setFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
                 }}
                 className="w-4 h-4 accent-blue-500"
@@ -673,15 +647,14 @@ export default function RequestForm({ onSubmit, onStatusChange }: RequestFormPro
                   type="checkbox"
                   name="researcherLevel"
                   value={level}
-                  checked={localFormData.researcherLevel.includes(level)}
+                  checked={formData.researcherLevel.includes(level)}
                   onChange={(e) => {
                     const value = e.target.value;
                     const isChecked = e.target.checked;
                     const updatedLevels = isChecked
-                      ? [...localFormData.researcherLevel, value]
-                      : localFormData.researcherLevel.filter(item => item !== value);
+                      ? [...formData.researcherLevel, value]
+                      : formData.researcherLevel.filter(item => item !== value);
 
-                    setLocalFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
                     setFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
                   }}
                   className="w-4 h-4 accent-blue-500"
