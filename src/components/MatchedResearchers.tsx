@@ -170,23 +170,18 @@ export default function MatchedResearchers({
 
   // お気に入り登録API実行（下部ボタン用）
   const handleSubmitFavorites = async () => {
-    if (favorites.length === 0) {
-      alert("お気に入りに登録する研究者を選択してください（星マークをクリック）");
-      return;
-    }
-
     // console.log("🌟 お気に入り一括登録開始 - favorites:", favorites, "project_id:", projectId);
-    
+
     try {
-      for (const researcherId of favorites) {
-        const researcher = researchers.find(r => 
-          (r.researcher_info?.researcher_id || r.matching_id).toString() === researcherId
-        );
-        
+      // すべての研究者についてお気に入り状態を送信
+      for (const researcher of researchers) {
+        const researcherId = (researcher.researcher_info?.researcher_id || researcher.matching_id).toString();
         const matchingId = researcher?.matching_id || Number(researcherId);
+        const isFavorite = favorites.includes(researcherId);
+
         const requestBody = {
           matching_id: matchingId,
-          favorite_status: true, // true = add to favorites
+          favorite_status: isFavorite, // true = add, false = remove
         };
 
         console.log("🌟 Request body:", requestBody);
@@ -201,18 +196,18 @@ export default function MatchedResearchers({
         });
 
         // console.log("🌟 Response status:", response.status);
-        
+
         if (!response.ok) {
           const errorText = await response.text();
           console.error("🌟 Response error:", errorText);
           throw new Error(`Failed to register favorite: ${response.status} ${response.statusText}`);
         }
       }
-      
+
       setShowFavoriteConfirm(false);
       setShowFavoriteSuccess(true);
       // console.log("🌟 お気に入り一括登録成功");
-      
+
     } catch (error) {
       console.error("❌ お気に入り登録エラー:", error);
       setShowFavoriteConfirm(false);
