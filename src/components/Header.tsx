@@ -64,9 +64,7 @@ const Header = () => {
     <header className="flex items-center justify-between p-4 shadow-md bg-white">
       {/* 研Qロゴ */}
       <div className="text-xl font-bold">
-        <Link href="/">
-          <img src="/研Qロゴ.png" alt="研Qのロゴ" className="h-10" />
-        </Link>
+        <img src="/研Qロゴ.png" alt="研Qのロゴ" className="h-10" />
       </div>
 
       {/* 中央エリア（スペース確保用） */}
