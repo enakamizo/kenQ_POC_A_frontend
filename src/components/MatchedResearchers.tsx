@@ -24,8 +24,6 @@ export default function MatchedResearchers({
   const [projectTitle, setProjectTitle] = useState("");
   const [projectData, setProjectData] = useState<any>(null);
   const [favorites, setFavorites] = useState<string[]>([]);
-  const [showFavoriteConfirm, setShowFavoriteConfirm] = useState(false);
-  const [showFavoriteSuccess, setShowFavoriteSuccess] = useState(false);
   const [expandedReasons, setExpandedReasons] = useState<string[]>([]);
   const [allReasonsExpanded, setAllReasonsExpanded] = useState(false);
 
@@ -156,64 +154,48 @@ export default function MatchedResearchers({
     }
   };
 
-  // ローカルお気に入り選択切り替え（☆ボタン用）
-  const handleToggleFavoriteLocal = (researcherId: string) => {
-    // console.log("🌟 ローカルお気に入り切り替え - researcher_id:", researcherId);
-    setFavorites((prev) => {
-      const newFavorites = prev.includes(researcherId)
-        ? prev.filter((id) => id !== researcherId)
-        : [...prev, researcherId];
-      // console.log("🌟 Updated local favorites:", newFavorites);
-      return newFavorites;
-    });
-  };
+  // 星マーククリック時にお気に入り状態を切り替え（API呼び出し）
+  const handleToggleFavoriteLocal = async (researcherId: string) => {
+    const researcher = researchers.find(r =>
+      (r.researcher_info?.researcher_id || r.matching_id).toString() === researcherId
+    );
 
-  // お気に入り登録API実行（下部ボタン用）
-  const handleSubmitFavorites = async () => {
-    // console.log("🌟 お気に入り一括登録開始 - favorites:", favorites, "project_id:", projectId);
+    if (!researcher) return;
+
+    const matchingId = researcher.matching_id || Number(researcherId);
+    const currentStatus = favorites.includes(researcherId);
+    const newStatus = !currentStatus;
+
+    // UIを即座に更新（楽観的UI更新）
+    setFavorites((prev) =>
+      newStatus ? [...prev, researcherId] : prev.filter((id) => id !== researcherId)
+    );
 
     try {
-      // すべての研究者についてお気に入り状態を送信
-      for (const researcher of researchers) {
-        const researcherId = (researcher.researcher_info?.researcher_id || researcher.matching_id).toString();
-        const matchingId = researcher?.matching_id || Number(researcherId);
-        const isFavorite = favorites.includes(researcherId);
-
-        const requestBody = {
+      const response = await fetch('/api/favorites', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           matching_id: matchingId,
-          favorite_status: isFavorite, // true = add, false = remove
-        };
+          favorite_status: newStatus,
+        }),
+      });
 
-        console.log("🌟 Request body:", requestBody);
-        console.log("🌟 Matching ID:", matchingId);
-
-        const response = await fetch('/api/favorites', {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        });
-
-        // console.log("🌟 Response status:", response.status);
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error("🌟 Response error:", errorText);
-          throw new Error(`Failed to register favorite: ${response.status} ${response.statusText}`);
-        }
+      if (!response.ok) {
+        throw new Error(`Failed to toggle favorite: ${response.statusText}`);
       }
-
-      setShowFavoriteConfirm(false);
-      setShowFavoriteSuccess(true);
-      // console.log("🌟 お気に入り一括登録成功");
-
     } catch (error) {
-      console.error("❌ お気に入り登録エラー:", error);
-      setShowFavoriteConfirm(false);
-      alert("お気に入りの登録に失敗しました。詳細はコンソールを確認してください。");
+      console.error("❌ お気に入り切り替えエラー:", error);
+      // エラー時は元に戻す
+      setFavorites((prev) =>
+        currentStatus ? [...prev, researcherId] : prev.filter((id) => id !== researcherId)
+      );
+      alert("お気に入りの更新に失敗しました。");
     }
   };
+
 
   const handleExportExcel = () => {
     // console.log("📊 Excel出力開始 - researchers.length:", researchers.length);
@@ -492,19 +474,6 @@ export default function MatchedResearchers({
       {/* 下部ボタン */}
       <div className="mt-6 flex justify-center gap-4">
         <button
-          onClick={() => {
-            if (favorites.length === 0) {
-              alert("お気に入りに登録する研究者を選択してください（星マークをクリック）");
-              return;
-            }
-            setShowFavoriteConfirm(true);
-          }}
-          className="px-6 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition font-medium flex items-center gap-2"
-        >
-          <span>☆</span>
-          お気に入りを保存する
-        </button>
-        <button
           onClick={handleExportExcel}
           className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition font-medium flex items-center gap-2"
         >
@@ -572,48 +541,6 @@ export default function MatchedResearchers({
         </div>
       )}
 
-      {/* お気に入り登録確認ポップアップ */}
-      {showFavoriteConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm w-full mx-4">
-            <h2 className="text-lg font-semibold mb-4">お気に入り登録確認</h2>
-            <p className="text-gray-600 mb-6">お気に入りの研究者を登録しますか？</p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={handleSubmitFavorites}
-                className="px-6 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition font-medium"
-              >
-                はい
-              </button>
-              <button
-                onClick={() => setShowFavoriteConfirm(false)}
-                className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
-              >
-                いいえ
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* お気に入り登録成功ポップアップ */}
-      {showFavoriteSuccess && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm w-full mx-4">
-            <h2 className="text-lg font-semibold mb-4">お気に入り登録完了</h2>
-            <p className="text-gray-600 mb-6">{favorites.length}人の研究者をお気に入りに登録しました！</p>
-            <button
-              onClick={() => {
-                setShowFavoriteSuccess(false);
-                // お気に入り選択はリセットしない（黄色い星を保持）
-              }}
-              className="px-6 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition font-medium"
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
