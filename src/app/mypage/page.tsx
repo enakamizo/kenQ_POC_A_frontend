@@ -193,7 +193,7 @@ export default function MyPage() {
                     <div className="text-blue-600">
                       お気に入りの研究者数: {project.favorite_count || 0}名
                     </div>
-                    <div>登録日: {project.registration_date || "未設定"}</div>
+                    <div>登録日: {project.registration_date ? new Date(project.registration_date).toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\//g, '/').replace(',', '') : "未設定"}</div>
                     <div>登録者: {project.company_user_name || "未設定"}</div>
                   </div>
 
